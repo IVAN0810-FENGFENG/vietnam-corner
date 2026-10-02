@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vietnam Corner - Online Menu</title>
+    <!-- Tailwind CSS for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 text-gray-800 pb-28">
+
+    <!-- Header -->
+    <header class="bg-green-700 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div>
+                <h1 class="text-xl font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-bowl-food"></i> Vietnam Corner
+                </h1>
+                <p class="text-xs text-green-200">WhatsApp: 011-7117 9821 | Lorong 1</p>
+            </div>
+            <!-- Language Switcher -->
+            <div class="flex bg-green-800 rounded-lg p-1 text-xs">
+                <button onclick="setLang('zh')" id="btn-zh" class="px-2 py-1 rounded bg-green-600 font-bold transition">中文</button>
+                <button onclick="setLang('en')" id="btn-en" class="px-2 py-1 rounded transition">EN</button>
+                <button onclick="setLang('ms')" id="btn-ms" class="px-2 py-1 rounded transition">BM</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto px-4 py-6">
+        
+        <!-- Category: A la Carte -->
+        <section class="mb-8">
+            <h2 class="text-lg font-bold text-green-800 border-b-2 border-green-600 pb-1 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-utensils"></i> <span data-i18n="cat_alacarte">单点主食 (A la Carte)</span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="menu-alacarte"></div>
+        </section>
+
+        <!-- Category: Per Portion / Add-ons -->
+        <section class="mb-8">
+            <h2 class="text-lg font-bold text-green-800 border-b-2 border-green-600 pb-1 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-plate-wheat"></i> <span data-i18n="cat_portion">加料 / 小份 (Per Portion)</span>
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3" id="menu-portion"></div>
+        </section>
+
+        <!-- Category: Bread Side (Banh Mi) -->
+        <section class="mb-8">
+            <h2 class="text-lg font-bold text-green-800 border-b-2 border-green-600 pb-1 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-bread-slice"></i> <span data-i18n="cat_bread">越南面包类 (Bread Side)</span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="menu-bread"></div>
+        </section>
+
+        <!-- Category: Drinks & Dessert -->
+        <section class="mb-8">
+            <h2 class="text-lg font-bold text-green-800 border-b-2 border-green-600 pb-1 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-mug-hot"></i> <span data-i18n="cat_drinks">饮料与甜点 (Drinks & Dessert)</span>
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="menu-drinks"></div>
+        </section>
+
+    </main>
+
+    <!-- Floating Cart Footer -->
+    <div id="cart-footer" class="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg p-4 z-40 hidden">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div>
+                <span class="text-sm text-gray-500" data-i18n="total_items">已选商品:</span> 
+                <span id="cart-count" class="font-bold text-green-700">0</span> <span data-i18n="items_unit">件</span>
+                <span class="ml-4 text-sm text-gray-500" data-i18n="total_price">总计:</span> 
+                <span class="text-lg font-bold text-red-600">RM <span id="cart-total">0.00</span></span>
+            </div>
+            <button onclick="checkoutWhatsApp()" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-xl font-bold shadow flex items-center gap-2 transition">
+                <i class="fa-brands fa-whatsapp text-lg"></i> <span data-i18n="checkout_btn">发送到 WhatsApp 点单</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript logic -->
+    <script>
+        // Translations data
+        const translations = {
+            zh: {
+                cat_alacarte: "单点主食 (A la Carte)",
+                cat_portion: "加料 / 小份 (Per Portion)",
+                cat_bread: "越南面包类 (Bread Side)",
+                cat_drinks: "饮料与甜点 (Drinks & Dessert)",
+                total_items: "已选:",
+                items_unit: "份",
+                total_price: "总计:",
+                checkout_btn: "通过 WhatsApp 结账",
+                add: "加入",
+                ordered: "已选"
+            },
+            en: {
+                cat_alacarte: "A la Carte",
+                cat_portion: "Per Portion / Add-ons",
+                cat_bread: "Bread Side",
+                cat_drinks: "Drinks & Dessert",
+                total_items: "Items:",
+                items_unit: "",
+                total_price: "Total:",
+                checkout_btn: "Checkout via WhatsApp",
+                add: "Add",
+                ordered: "Added"
+            },
+            ms: {
+                cat_alacarte: "A la Carte",
+                cat_portion: "Per Portion / Tambahan",
+                cat_bread: "Roti (Bread Side)",
+                cat_drinks: "Minuman & Pencuci Mulut",
+                total_items: "Jumlah:",
+                items_unit: "item",
+                total_price: "Jumlah Harga:",
+                checkout_btn: "Hantar Pesanan ke WhatsApp",
+                add: "Tambah",
+                ordered: "Dipilih"
+            }
+        };
+
+        let currentLang = 'zh';
+
+        // Menu Database based on the image
+        const menuData = {
+            alacarte: [
+                { id: 1, name: { zh: "烤猪肉或鸡肉干捞河粉", en: "Grill Pork or Chicken With Rice Noodle", ms: "Babi/Ayam Bakar dengan Bihun" }, price: 15.00 },
+                { id: 2, name: { zh: "越南猪肉饭", en: "Vietnam Pork Rice", ms: "Nasi Babi Vietnam" }, price: 15.00 },
+                { id: 3, name: { zh: "鸡肉饭", en: "Chicken Rice", ms: "Nasi Ayam" }, price: 15.00 },
+                { id: 4, name: { zh: "越南扎肉/酸肉", en: "Nem Chua / Fermented Pork", ms: "Nem Chua / Daging Peram Vietnam" }, price: 18.00 }
+            ],
+            portion: [
+                { id: 5, name: { zh: "冷肉", en: "Cold Meat", ms: "Daging Sejuk" }, price: 4.00 },
+                { id: 6, name: { zh: "扎肉", en: "Pork Ham", ms: "Ham Babi" }, price: 4.00 },
+                { id: 7, name: { zh: "香酥炸春卷", en: "Crispy Pork Spring Roll", ms: "Popia Goreng Babi" }, price: 5.00 },
+                { id: 8, name: { zh: "炸春卷", en: "Spring Roll", ms: "Popia Goreng" }, price: 2.00 },
+                { id: 9, name: { zh: "鱼饼", en: "Fish Cake", ms: " Kek Ikan" }, price: 6.00 },
+              { id: 10, name: { zh: "鲜虾
